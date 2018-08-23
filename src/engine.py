@@ -9,7 +9,6 @@ from process_query import processQuery
 def main():
     dictionary = {}
     readMetadata(dictionary)
-    # print (dictionary)
     processQuery(str(sys.argv[1]), dictionary)
 
 

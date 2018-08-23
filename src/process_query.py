@@ -3,6 +3,7 @@ import sys
 from distinct_query import distinctMany
 from select_columns import selectColumns
 from where_query import *
+from aggregate_query import aggregate
 
 
 def processQuery(query, dictionary):
@@ -74,18 +75,18 @@ def processQuery(query, dictionary):
         distinctMany(columnNames, tableNames, dictionary)
         return
 
-    # if len(columnNames) == 1:
-    #     # aggregate -- Assuming (len(columnNames) == 1) i.e aggregate function
-    #     for col in columnNames:
-    #         if '(' in col and ')' in col:
-    #             funcName = ""
-    #             colName = ""
-    #             a1 = col.split('(')
-    #             funcName = (re.sub(' +', ' ', a1[0])).strip()
-    #             colName = (re.sub(' +', ' ', a1[1].split(')')[0])).strip()
-    #             aggregate(funcName, colName, tableNames[0], dictionary)
-    #             return
-    #         elif '(' in col or ')' in col:
-    #             sys.exit("Syntax error")
+    if len(columnNames) == 1:
+        # aggregate -- Assuming (len(columnNames) == 1) i.e aggregate function
+        for col in columnNames:
+            if '(' in col and ')' in col:
+                funcName = ""
+                colName = ""
+                a1 = col.split('(')
+                funcName = (re.sub(' +', ' ', a1[0])).strip()
+                colName = (re.sub(' +', ' ', a1[1].split(')')[0])).strip()
+                aggregate(funcName, colName, tableNames[0], dictionary)
+                return
+            elif '(' in col or ')' in col:
+                sys.exit("Syntax error")
 
     selectColumns(columnNames, tableNames, dictionary)
