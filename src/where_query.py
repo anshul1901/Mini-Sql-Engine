@@ -1,3 +1,4 @@
+import sys
 from read_data import readFile
 from print_output import printHeader
 
@@ -5,7 +6,14 @@ from print_output import printHeader
 def processWhere(whereStr, columnNames, tableNames, dictionary):
     a = whereStr.split(" ")
 
+    if a[0] not in dictionary[tableNames[0]]:
+        error = "[ERROR]: unknown column '" + a[0] + "' in where clause"
+        sys.exit(error)
     # print (a)
+    # print (len(a))
+    if len(a) > 3 and a[4] not in dictionary[tableNames[0]]:
+        error = "[ERROR]: unknown column '" + a[4] + "' in where clause"
+        sys.exit(error)
 
     if(len(columnNames) == 1 and columnNames[0] == '*'):
         columnNames = dictionary[tableNames[0]]
@@ -17,10 +25,17 @@ def processWhere(whereStr, columnNames, tableNames, dictionary):
     readFile(tName, fileData)
 
     check = 0
+    evalCheck = 0
+    # print (fileData)
     for data in fileData:
         string = evaluate(a, tableNames, dictionary, data)
         for col in columnNames:
-            if eval(string):
+            # print(col)
+            try:
+                evalCheck = eval(string)
+            except:
+                sys.exit('error')
+            if evalCheck:
                 check = 1
                 print (data[dictionary[tableNames[0]].index(col)], end="\t\t")
         if check == 1:
@@ -40,7 +55,7 @@ def processWhereJoin(whereStr, columnNames, tableNames, dictionary):
     for item1 in l1:
         for item2 in l2:
             fileData.append(item2 + item1)
-
+    
     dictionary["sample"] = []
     for i in dictionary[tableNames[1]]:
         dictionary["sample"].append(tableNames[1] + '.' + i)
@@ -48,7 +63,7 @@ def processWhereJoin(whereStr, columnNames, tableNames, dictionary):
         dictionary["sample"].append(tableNames[0] + '.' + i)
 
     dictionary["test"] = dictionary[tableNames[1]] + dictionary[tableNames[0]]
-
+    print (dictionary)
     tableNames.remove(tableNames[0])
     tableNames.remove(tableNames[0])
     tableNames.insert(0, "sample")
@@ -61,12 +76,18 @@ def processWhereJoin(whereStr, columnNames, tableNames, dictionary):
     print ('\n')
 
     a = whereStr.split(" ")
-
+    print (a)
     check = 0
+    evalCheck = 0
     for data in fileData:
         string = evaluate(a, tableNames, dictionary, data)
+        # print (string)
         for col in columnNames:
-            if eval(string):
+            try:
+                evalCheck = eval(string)
+            except:
+                sys.exit('error')
+            if evalCheck:
                 check = 1
                 if '.' in col:
                     print (data[dictionary[tableNames[0]].index(col)], end='\t\t')
@@ -80,6 +101,10 @@ def processWhereJoin(whereStr, columnNames, tableNames, dictionary):
 
 
 def evaluate(a, tableNames, dictionary, data):
+    # print ('from evaluate a = ', a)
+    # print ('from evaluate tN = ', tableNames)
+    # print ('from evaluate d = ', dictionary)
+    # print ('from evaluate data = ', data)
     string = ""
     for i in a:
         # print (i)
@@ -89,7 +114,8 @@ def evaluate(a, tableNames, dictionary, data):
             string += data[dictionary[tableNames[0]].index(i)]
         elif i.lower() == 'and' or i.lower() == 'or':
             string += ' ' + i.lower() + ' '
+            # print ("or found")
         else:
             string += i
-        # print (string)
+        # print (string) 
     return string

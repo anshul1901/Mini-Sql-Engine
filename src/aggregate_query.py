@@ -5,10 +5,12 @@ from distinct_query import distinct
 
 def aggregate(func, columnName, tableName, dictionary):
 
+    # print('[FROM AGGREGATE]', dictionary)
     if columnName == '*':
-        sys.exit("error")
+        sys.exit("[ERROR]: sql query syntax error, aggregate functions not applicable on *")
     if columnName not in dictionary[tableName]:
-        sys.exit("error")
+        error = "[ERROR]: no column named " + columnName + " found in " + tableName
+        sys.exit(error)
 
     tName = tableName + '.csv'
     fileData = []
@@ -28,5 +30,4 @@ def aggregate(func, columnName, tableName, dictionary):
     elif func.lower() == 'distinct':
         distinct(colList, columnName, tableName, dictionary)
     else:
-        print ("ERROR")
-        print ("Unknown function : ", '"' + func + '"')
+        print ("[ERROR]: unknown function :", '"' + func + '"')

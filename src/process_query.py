@@ -3,6 +3,7 @@ import sys
 from distinct_query import distinctMany
 from select_columns import selectColumns
 from where_query import *
+from join_query import join
 from aggregate_query import aggregate
 
 
@@ -56,7 +57,8 @@ def processQuery(query, dictionary):
         tableNames[tableNames.index(i)] = (re.sub(' +', ' ', i)).strip()
     for i in tableNames:
         if i not in dictionary.keys():
-            sys.exit("Table not found")
+            error = "[ERROR]: Table '" + i + "' doesn't exist"
+            sys.exit(error)
 
     if len(object2) > 1 and len(tableNames) == 1:
         object2[1] = (re.sub(' +', ' ', object2[1])).strip()

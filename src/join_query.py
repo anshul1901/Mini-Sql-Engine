@@ -33,7 +33,7 @@ def join(columnNames, tableNames, dictionary):
     # print (header)
     for i in columnNames:
         print (i, end='\t')
-    print
+    print ('\n')
 
     # printData(fileData,columnNames,tableNames,dictionary)
 
